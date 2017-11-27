@@ -3,7 +3,10 @@
 <head>
 	<meta></meta>
 	<title></title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  	<script src="https://code.jquery.com/jquery.js"></script>
+ 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>	
+ 	<link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
@@ -184,6 +187,34 @@
 	    </div>
 	</div>
 
-	<script src='surveyLogic.js'></script>
+	<script type="text/javascript">
+		$("#submit").on("click", function(event) {
+			var scoreArray = [];
+			if (!$("#name")[0].checkValidity() || !$("#photo")[0].checkValidity()) {
+				return;
+			}
+			for (var i = 1; i < 11; i++) {
+				if (!$("#q" + i)[0].checkValidity()) {
+					return;
+				};
+				scoreArray.push(parseInt($("#q" + i).val()));
+			};
+			event.preventDefault();
+			var newUser = {
+				name: $("#name").val().trim(),
+				photo: $("#photo").val().trim(),
+				scores: scoreArray
+			};
+			$.post("/api/friends", newUser, function(data) {
+				if (data) {
+					$("#match-name").text(data.name);
+		    		$('#match-img').attr("src", data.photo);
+			    	$("#results").modal('toggle');
+				} else {
+					console.log("Failed to add user.");
+				}
+			});
+		});
+	</script>
 </body>
 </html>
